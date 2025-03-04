@@ -1,6 +1,6 @@
 import React, { useEffect, useState} from 'react'
 
-function check () {
+function Check () {
   const [inputValue, setInputValue] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -35,4 +35,4 @@ function check () {
     </main>
   )
 };
-export default check
+export default Check
