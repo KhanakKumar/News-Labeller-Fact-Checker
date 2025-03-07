@@ -20,7 +20,7 @@ def scrape_website(url):
         
         return {
             "title": title,
-            "content": paragraphs[:5] if paragraphs else ["No text found"]
+            "content": paragraphs[:] if paragraphs else ["No text found"]
         }
     
     except requests.exceptions.RequestException as e:
