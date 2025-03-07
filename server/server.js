@@ -13,18 +13,22 @@ const isValidUrl = urlString=> {
 }
 async function data_scraping({ query }){
     try{
-        const response = await fetch("http://localhost:5005/scraping_api", {
+        const response = await fetch("http://localhost:5005/scrape", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+<<<<<<< HEAD
         body: JSON.stringify({ query: query }),
+=======
+        body: JSON.stringify({ url: query }),
+>>>>>>> a49b173fe02501eae2a9d1efbfc66305f7de3626
         });
 
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
     
-        const data = await response.json();
-        console.log("Scraping Success:", data);
+        const scraped_data = await response.json();
+        console.log("Scraping Success:", scraped_data);
         return data; 
     }
     catch (error) {
