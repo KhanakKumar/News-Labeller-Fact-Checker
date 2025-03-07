@@ -16,7 +16,7 @@ async function data_scraping({ query }){
         const response = await fetch("http://localhost:5005/scraping_api", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: inputValue }),
+        body: JSON.stringify({ query: query }),
         });
 
         if (!response.ok) {
