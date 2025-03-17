@@ -2,6 +2,7 @@ from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from scrape import scrape_website
+from textextract import main_function
 
 app = FastAPI()
 
@@ -15,6 +16,8 @@ app.add_middleware(
 
 class ScrapeRequest(BaseModel):
     url: str
+class ExtractRequest(BaseModel):
+    text: str
 
 @app.post("/scrape")
 def scrape_api(request: ScrapeRequest):
@@ -22,4 +25,12 @@ def scrape_api(request: ScrapeRequest):
     if "error" in scraped_data:
         return {"error": scraped_data["error"]}
     return {"url": request.url, "data": scraped_data}
-    
+
+@app.post("/extract")
+def extract_api(request: ExtractRequest):
+    extracted_data = main_function(request.text)
+    if not extracted_data:
+        return {"error": "No claims extracted"}
+    return {"text": request.text, "data": extracted_data}
+
+

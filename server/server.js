@@ -16,11 +16,7 @@ async function data_scraping({ query }){
         const response = await fetch("http://localhost:5005/scrape", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-<<<<<<< HEAD
-        body: JSON.stringify({ query: query }),
-=======
         body: JSON.stringify({ url: query }),
->>>>>>> a49b173fe02501eae2a9d1efbfc66305f7de3626
         });
 
         if (!response.ok) {
@@ -29,11 +25,33 @@ async function data_scraping({ query }){
     
         const scraped_data = await response.json();
         console.log("Scraping Success:", scraped_data);
-        return data; 
+        return scraped_data; 
     }
     catch (error) {
       console.error("Scraping Error:", error);
       return { error: "Scraping failed" };
+    }
+}
+
+async function claim_extract({ query }){
+    try{
+        const response = await fetch("http://localhost:5005/extract", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: query }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+    
+        const data_extract = await response.json();
+        console.log("Extraction Success:", data_extract);
+        return data_extract; 
+    }
+    catch (error) {
+      console.error("Extraction Error:", error);
+      return { error: "Extraction failed" };
     }
 }
 
@@ -45,7 +63,7 @@ app.get("/api/home", (req, res) => {
 });
 
 app.post("/api/home" , async (req, res) => {
-    const { query } = req.body;
+    var { query } = req.body;
 
     if(!query){
         console.log("Error: Query is missing!");
@@ -54,8 +72,18 @@ app.post("/api/home" , async (req, res) => {
 
     else if(isValidUrl(query)){
         const scrapedData = await data_scraping({query});
-        return res.json(scrapedData);
+        if (scrapedData.data && scrapedData.data.content) {
+            query = scrapedData.data.content.join(" "); // Combine paragraphs into one text block
+            console.log("Using scraped text:", query);
+        } 
+        else {
+            console.log("Scraping returned no content");
+            return res.status(400).json({ error: "Scraping failed or no content found" });
+        }
     }
+
+    const extract = await claim_extract({query});
+    return res.json(extract);
 });
 
 app.listen(PORT, () => {

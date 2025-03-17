@@ -26,7 +26,7 @@ def extract_claims(text):
     return claims
 
 # Main Function
-def main(text):
+def main_function(text):
     """Process input text and extract claims."""
     # Preprocess text
     text = preprocess_text(text)
@@ -34,18 +34,11 @@ def main(text):
     # Extract claims
     claims = extract_claims(text)
 
+    if not claims:
+        return []
+    
     # Save claims to a JSON file
     with open('claims.json', 'w') as f:
         json.dump(claims, f, indent=2)
 
-    print("Claims extracted and saved to 'claims.json'.")
-    print(claims)
-
-# if __name__ == '__main__':
-#     # Example text input
-#     input_text = """
-#     The government claims that the new policy will reduce taxes. 
-#     However, experts say this is misleading. The policy will only benefit the wealthy."""
-
-#     # Run the pipeline
-#     main(input_text)
+    return claims
